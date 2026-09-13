@@ -1,0 +1,48 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Compile hello.c to hello.exe
+        run: cl /nologo /W3 /O2 /Fe:hello.exe hello.c
+
+      - name: Upload hello.exe artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: hello-exe
+          path: hello.exe
+
+      - name: Create GitHub Release with hello.exe
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          name: Hello World v1.0.0
+          body: |
+            Windows executable built from `hello.c`.
+
+            Download **hello.exe**, then double-click it or run it in Command Prompt.
+
+            Expected output:
+
+            ```
+            Hello, World!
+            ```
+          files: hello.exe
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true
