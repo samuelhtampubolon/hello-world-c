@@ -1,0 +1,8 @@
+hello
+hello.exe
+*.obj
+*.o
+*.pdb
+*.ilk
+*.exp
+*.lib
